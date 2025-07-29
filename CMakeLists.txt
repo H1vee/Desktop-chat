@@ -39,11 +39,13 @@ endif()
 
 add_library(MyChat_UI STATIC
         src/ui/windows/MainWindow.cpp
+        src/ui/widgets/common/CustomBox.cpp
 )
 
 target_include_directories(MyChat_UI PUBLIC
         src/ui
         src/ui/windows
+        src/ui/widgets/common
 )
 
 target_link_libraries(MyChat_UI

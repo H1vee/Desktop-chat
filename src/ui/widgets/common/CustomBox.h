@@ -65,7 +65,7 @@ protected:
     void childEvent(QChildEvent *event) override;
 
     virtual void layoutItems();
-    virtual QRect calculateitemRect(int index, const QSize &itemSize) const;
+    virtual QRect calculateItemRect(int index, const QSize &itemSize) const;
     virtual void paintBackground (QPainter &painter);
     virtual void paintBorder (QPainter &painter);
 
