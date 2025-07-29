@@ -1,41 +1,49 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
+/build/
+/build-*
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+install_manifest.txt
+*.autosave
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.qmlproject.user
+*.qmlproject.user.*
+*.creator.*
+*.creator
+*.user
+*.user.*
+.vscode/
+.vscode/*
+.vscode/*.*
 *.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
+*.a
 *.so
+*.so.*
 *.dylib
 *.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
 *.exe
-*.out
-*.app
-
-# debug information files
-*.dwo
+*.log
+*.dmp
+*.tmp
+.idea/
+*.iml
+*.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.bak
+*.old
+*.gcno
+*.gcda
+*.gcov
+*.shadercache
+*.cache
+*.obj
+*.pch
+*.local
+*.secret
