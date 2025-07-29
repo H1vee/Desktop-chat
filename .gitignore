@@ -1,5 +1,6 @@
 /build/
 /build-*
+/cmake-build-debug
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
@@ -47,3 +48,4 @@ Thumbs.db
 *.pch
 *.local
 *.secret
+
