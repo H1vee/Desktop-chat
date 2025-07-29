@@ -201,3 +201,12 @@ void CustomBox::updateLayout() {
     updateGeometry();
 }
 
+int CustomBox::getMainSize(const QSize &size) const {
+    return isHorizontal() ? size.width() : size.height();
+}
+int CustomBox::getCrossSize(const QSize &size) const {
+    return isHorizontal() ? size.height() : size.width();
+}
+QSize CustomBox::makeSize(int main, int cross) const {
+    return isHorizontal()? QSize(main,cross) : QSize(cross,main);
+}
