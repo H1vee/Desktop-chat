@@ -3,43 +3,43 @@
 //
 
 #include "CustomBox.h"
-
-#include <qcoreevent.h>
 #include <QPainter>
+#include <QResizeEvent>
+#include <QChildEvent>
 
 CustomBox::CustomBox(Direction direction, QWidget *parent)
-    :QWidget(parent)
-      ,m_direction(direction)
-      ,m_alignment(Alignment::Start)
-      ,m_spacing(0)
-      ,m_margins(0,0,0,0)
-  {
-  setAttribute(Qt::WA_StyledBackground, true);
-  setMinimumSize(0, 0);
-  }
+    : QWidget(parent)
+    , m_direction(direction)
+    , m_alignment(Alignment::Start)
+    , m_spacing(0)
+    , m_margins(0,0,0,0)
+{
+    setAttribute(Qt::WA_StyledBackground, true);
+    setMinimumSize(0, 0);
+}
 
 CustomBox::~CustomBox() {
-     clear();
+    clear();
 }
 
 void CustomBox::addItem(QWidget *item, int stretch) {
     if (!item) return;
 
-    insertItem(m_items.size(), item,stretch);
+    insertItem(m_items.size(), item, stretch);
 }
 
 void CustomBox::insertItem(int index, QWidget *item, int stretch) {
     if (!item || index < 0 || index > m_items.size())
         return;
 
-    for (const auto &info :m_items) {
+    for (const auto &info : m_items) {
         if (info.widget == item) return;
     }
 
     item->setParent(this);
     item->show();
 
-    m_items.insert(index,ItemInfo(item,qMax(0,stretch)));
+    m_items.insert(index, ItemInfo(item, qMax(0, stretch)));
 
     updateLayout();
 
@@ -48,13 +48,14 @@ void CustomBox::insertItem(int index, QWidget *item, int stretch) {
 
 void CustomBox::removeItem(QWidget *item) {
     if (!item) return;
-    if (const int index = indexOf(item); index!=-1) {
+    const int index = indexOf(item);
+    if (index != -1) {
         removeItem(index);
     }
 }
 
 void CustomBox::removeItem(int index) {
-    if (index < 0 || index > m_items.size()) return;
+    if (index < 0 || index >= m_items.size()) return;
 
     QWidget *item = m_items[index].widget;
     m_items.removeAt(index);
@@ -75,13 +76,13 @@ void CustomBox::clear() {
 }
 
 QWidget *CustomBox::itemAt(int index) const {
-    if (index < 0 ||index > m_items.size()) return nullptr;
+    if (index < 0 || index >= m_items.size()) return nullptr;
 
     return m_items[index].widget;
 }
 
 int CustomBox::indexOf(QWidget *item) const {
-    for (int i = 0; i<m_items.size(); ++i) {
+    for (int i = 0; i < m_items.size(); ++i) {
         if (m_items[i].widget == item) return i;
     }
     return -1;
@@ -95,18 +96,18 @@ void CustomBox::setDirection(Direction direction) {
 }
 
 void CustomBox::setSpacing(int spacing) {
-    if (m_spacing !=spacing) {
-        m_spacing = qMax(0,spacing);
+    if (m_spacing != spacing) {
+        m_spacing = qMax(0, spacing);
         updateLayout();
     }
 }
 
 void CustomBox::setContentsMargins(int left, int top, int right, int bottom) {
-        setContentsMargins(QMargins(left, top, right, bottom));
+    setContentsMargins(QMargins(left, top, right, bottom));
 }
 
 void CustomBox::setContentsMargins(const QMargins &margins) {
-    if (m_margins !=margins) {
+    if (m_margins != margins) {
         m_margins = margins;
         updateLayout();
     }
@@ -117,36 +118,35 @@ QSize CustomBox::sizeHint() const {
 }
 
 QSize CustomBox::minimumSizeHint() const {
-    QSize total (0, 0);
+    QSize total(0, 0);
 
     for (const auto &info : m_items) {
-        if (!info.widget || !info.widget->isVisible())continue;
+        if (!info.widget || !info.widget->isVisible()) continue;
 
         QSize itemMin = info.widget->minimumSizeHint();
 
         if (isHorizontal()) {
-            total.rwidth()+= itemMin.width();
-            total.rheight()+= qMax(total.height(), itemMin.height());
-        }else {
-            total.rwidth()+= qMax(total.width(),itemMin.width());
-            total.rheight()+=itemMin.height();
+            total.rwidth() += itemMin.width();
+            total.rheight() = qMax(total.height(), itemMin.height());
+        } else {
+            total.rwidth() = qMax(total.width(), itemMin.width());
+            total.rheight() += itemMin.height();
         }
     }
 
     if (m_items.size() > 1) {
-        int spacingTotal = m_spacing * (m_items.size()-1);
+        int spacingTotal = m_spacing * (m_items.size() - 1);
         if (isHorizontal()) {
-            total.rwidth()+=spacingTotal;
-        }else {
-            total.rheight()+=spacingTotal;
+            total.rwidth() += spacingTotal;
+        } else {
+            total.rheight() += spacingTotal;
         }
     }
 
-    total+=QSize(m_margins.left()+m_margins.right(), m_margins.top()+m_margins.bottom());
+    total += QSize(m_margins.left() + m_margins.right(), m_margins.top() + m_margins.bottom());
 
     return total;
 }
-
 
 void CustomBox::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
@@ -166,7 +166,7 @@ void CustomBox::childEvent(QChildEvent *event) {
     QWidget::childEvent(event);
 
     if (event->type() == QEvent::ChildAdded) {
-        if (auto *widget = qobject_cast<QWidget*>(event->child())) {
+        if (auto *widget = qobject_cast<QWidget *>(event->child())) {
             if (indexOf(widget) == -1) addItem(widget);
         }
     }
@@ -179,8 +179,8 @@ void CustomBox::layoutItems() {
 }
 
 QRect CustomBox::calculateItemRect(int index, const QSize &itemSize) const {
-    Q_UNUSED(index)
-    Q_UNUSED(itemSize)
+    Q_UNUSED(index);
+    Q_UNUSED(itemSize);
 
     return QRect();
 }
@@ -204,9 +204,122 @@ void CustomBox::updateLayout() {
 int CustomBox::getMainSize(const QSize &size) const {
     return isHorizontal() ? size.width() : size.height();
 }
+
 int CustomBox::getCrossSize(const QSize &size) const {
     return isHorizontal() ? size.height() : size.width();
 }
+
 QSize CustomBox::makeSize(int main, int cross) const {
-    return isHorizontal()? QSize(main,cross) : QSize(cross,main);
+    return isHorizontal() ? QSize(main, cross) : QSize(cross, main);
+}
+
+QSize CustomBox::calculateTotalSize() const {
+    QSize total(0, 0);
+    for (const auto &info : m_items) {
+        if (!info.widget || !info.widget->isVisible()) continue;
+
+        QSize itemHint = info.widget->sizeHint();
+
+        if (isHorizontal()) {
+            total.rwidth() += itemHint.width();
+            total.rheight() = qMax(total.height(), itemHint.height());
+        } else {
+            total.rwidth() = qMax(total.width(), itemHint.width());
+            total.rheight() += itemHint.height();
+        }
+    }
+    if (m_items.size() > 1) {
+        int spacingTotal = m_spacing * (m_items.size() - 1);
+        if (isHorizontal()) {
+            total.rwidth() += spacingTotal;
+        } else {
+            total.rheight() += spacingTotal;
+        }
+    }
+    total += QSize(m_margins.left() + m_margins.right(), m_margins.top() + m_margins.bottom());
+
+    return total;
+}
+
+int CustomBox::calculateTotalStretch() const {
+    int total = 0;
+    for (const auto &info : m_items) {
+        if (info.widget && info.widget->isVisible()) total += info.stretch;
+    }
+    return total;
+}
+
+void CustomBox::distributeSpace() {
+    if (m_items.isEmpty()) return;
+
+    QRect contentRect = rect().marginsRemoved(m_margins);
+    int totalStretch = calculateTotalStretch();
+
+    int fixedSpace = 0;
+    int visibleCount = 0;
+
+    for (const auto &info : m_items) {
+        if (!info.widget || !info.widget->isVisible()) continue;
+
+        visibleCount++;
+        if (info.stretch == 0) {
+            QSize hint = info.widget->sizeHint();
+            fixedSpace += isHorizontal() ? hint.width() : hint.height();
+        }
+    }
+
+    if (visibleCount > 1) fixedSpace += m_spacing * (visibleCount - 1);
+
+    int availableSpace = getMainSize(contentRect.size()) - fixedSpace;
+
+    int currentPos = isHorizontal() ? contentRect.left() : contentRect.top();
+
+    for (const auto &info : m_items) {
+        if (!info.widget || !info.widget->isVisible()) continue;
+
+        QSize itemSize;
+        if (info.stretch > 0 && totalStretch > 0) {
+            int stretchSpace = (availableSpace * info.stretch) / totalStretch;
+            itemSize = makeSize(stretchSpace, getCrossSize(contentRect.size()));
+        } else {
+            QSize hint = info.widget->sizeHint();
+            itemSize = makeSize(getMainSize(hint), getCrossSize(contentRect.size()));
+        }
+
+        QRect itemRect;
+        if (isHorizontal()) {
+            itemRect = QRect(currentPos, contentRect.top(), itemSize.width(), itemSize.height());
+
+            switch (m_alignment) {
+                case Alignment::Center:
+                    itemRect.moveTop(contentRect.top() + (contentRect.height() - itemRect.height()) / 2);
+                    break;
+                case Alignment::End:
+                    itemRect.moveBottom(contentRect.bottom());
+                    break;
+                case Alignment::Start:
+                case Alignment::Stretch:
+                default:
+                    break;
+            }
+        } else {
+            itemRect = QRect(contentRect.left(), currentPos, itemSize.width(), itemSize.height());
+
+            switch (m_alignment) {
+                case Alignment::Center:
+                    itemRect.moveLeft(contentRect.left() + (contentRect.width() - itemRect.width()) / 2);
+                    break;
+                case Alignment::End:
+                    itemRect.moveRight(contentRect.right());
+                    break;
+                case Alignment::Start:
+                case Alignment::Stretch:
+                default:
+                    break;
+            }
+        }
+
+        info.widget->setGeometry(itemRect);
+        currentPos += getMainSize(itemRect.size()) + m_spacing;
+    }
 }
