@@ -40,10 +40,12 @@ endif()
 add_library(MyChat_UI STATIC
         src/ui/windows/MainWindow.cpp
         src/ui/widgets/common/CustomBox.cpp
+        src/ui/widgets/CustomButton.cpp
 )
 
 target_include_directories(MyChat_UI PUBLIC
         src/ui
+        src/ui/widgets
         src/ui/windows
         src/ui/widgets/common
 )
